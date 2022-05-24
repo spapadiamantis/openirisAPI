@@ -128,7 +128,7 @@ def getUsers(cookies,start='2021-03-07',end='2023-03-08', to_csv=False):
 
 def getResourcesForProvider(cookies,providerId):
     """
-    Downloads a dataframe with information on all resource that are
+    Downloads a dataframe with information on all resources that are
     administered by a specific provider
     
     Args:
@@ -150,71 +150,244 @@ def getResourcesForProvider(cookies,providerId):
 
 
 def getAllResources(cookies, to_csv=False):
+    """
+    Downloads a dataframe with information on all resources that are
+    administered the account in any provider
+    
+    Args:
+        cookies: cookie used for the request
+        to_csv: flag to save dataframe in csv form
+
+    Returns:
+        df: dataframe of all resources 
+    """
+
+    # Get a list of all provider IDs
     providerIds = getProviderIDs(cookies)
-    df_list = [] 
+
+    # Initiate list of result dataframes
+    df_list = []
+
+
     for i in providerIds['Id']:
+
+    # Append result to list
         df_list.append(getResourcesForProvider(cookies,providerId=i))
-    df = pd.concat(df_list)
+
+    # Concatenate reusults
+    data = pd.concat(df_list)
+
+    # If flag save in csv form
     if to_csv:
-        df.to_csv('resources.csv')
-    return df
+        data.to_csv('resources.csv')
+
+    
+    return data
 
 
-###### Statistics ########
+##########Statistics#############
+# Requests on the statistics tab#
 
 def listRecourceIDs(cookies):
+    """
+    Create a list of the IDs of all resources in any
+    provider that you might administer
 
+    Args:
+        cookies: cookie used for the request
+
+    Returns:
+        list of list of the IDs of all resources in any
+    provider that you might administer
+    """
+
+    # Request all resources dataframe and cast Resource id
+    # column to list
     return getAllResources(cookies)['ResourceId'].tolist()
 
 def getResourceStatistics(cookies,resources=[],start='2021-03-07',end='2022-03-07'):
+    """
+    Download all resource usage statistics from Statistics
+    page
+
+    Args:
+        cookies: cookie used for the request
+        resources: list of resources to include in request
+        start: start date to filter results
+        end: end date to filter results
+
+    Returns:
+        Dataframe of statistics table
+    """
+
+    # If resources is empty
     if not resources:
+
+       # Select all resources
        resources = listRecourceIDs(cookies)
+
+    # Set up request url
     url = 'https://iris.science-it.ch/statistics/queryResourcesUtilization'
+
+    # Get data in raw form
     raw_data = requests.post(url,params={'resources':resources,'from':start,'to':end, 'timeInterval':1,'mode':1},cookies=cookies)
+
+    # Return formatted data
     return data_from_raw(raw_data.content,data_field=False)
 
 
 def getHeatmapData(cookies,resources=[], start='2021-03-07',end='2022-03-07'):
+    """
+    Download all resource usage statistics from Statistics
+    page in heatmap from
+
+    Args:
+        cookies: cookie used for the request
+        resources: list of resources to include in request
+        start: start date to filter results
+        end: end date to filter results
+
+    Returns:
+        Dataframe of statistics table
+    """
+
+    # If resources is empty
     if not resources:
+
+       # Select all resources
        resources = listRecourceIDs(cookies)
+
+    # Set up request url
     url = 'https://iris.science-it.ch/statistics/queryHeatmapData'
+
+    # Get data in raw form
     raw_data = requests.post(url,params={'resources':resources,'from':start,'to':end},cookies=cookies)
+
+    # Return formatted data
     return data_from_raw(raw_data.content,data_field=False)
 
 def getTotalsReportData(cookies,resources=[], start='2021-03-07',end='2022-03-07', mode='user'):
+    """
+    Download all resource usage statistics from Statistics
+    page using the usage total option
+
+    Args:
+        cookies: cookie used for the request
+        resources: list of resources to include in request
+        start: start date to filter results
+        end: end date to filter results
+
+    Returns:
+        Dataframe of statistics table
+    """
+
+    # If resources is empty
     if not resources:
+
+       # Select all resources
        resources = listRecourceIDs(cookies)
+
+    # Set up request url
     url = 'https://iris.science-it.ch/statistics/queryTotalsReportData'
+
+    # Get data in raw form
     raw_data = requests.post(url,params={'resources':resources,'from':start,'to':end,'mode':mode},cookies=cookies)
+
+    # Return formatted data
     return data_from_raw(raw_data.content,data_field="OrganizationItems")
 
 def getResourceUsageByUser(cookies,resources=[], start='2021-03-07',end='2022-03-07',mode='scheduled'):
+    """
+    Download resource usage by user statistics from Statistics
+    page
+
+    Args:
+        cookies: cookie used for the request
+        resources: list of resources to include in request
+        start: start date to filter results
+        end: end date to filter results
+
+    Returns:
+        Dataframe of statistics table
+    """
+
+    # If resources is empty
     if not resources:
+
+       # Select all resources
        resources = listRecourceIDs(cookies)
+
+    # Set up request url
     url = 'https://iris.science-it.ch/statistics/queryResourceUsageByUser'
+
+    # Get data in raw form
     raw_data = requests.post(url,params={'resources':resources,'from':start,'to':end,'mode':mode},cookies=cookies)
     return data_from_raw(raw_data.content,data_field="Items")
 
 def getResourceTypes(cookies, providers=[]):
+    """
+    Get a dataframe with all resource types that 
+    appear in resource linked to your providers
+
+    Args:
+        cookies: cookie used for the request
+        resources: list of resources to include in request
+
+    Returns:
+        Dataframe of statistics table
+    """
+
+    # If resources list is empty
     if not providers:
+
+       # Select all resources
        providers = getProviderIDs(cookies)
+
+    # Set up request url
     url = 'https://iris.science-it.ch/adminresourcetypes/queryadminproviders'
+
+    # Get data in raw form
     raw_data = requests.post(url,params={'Providers':providers},cookies=cookies)
+
+    # Return formatted data
     return data_from_raw(raw_data.content,data_field="ParentTypes")
 
-def test_request():
-    url = 'https://iris.science-it.ch/Resources?_=1646646300367'
-    data = requests.get(url)
-    return data.content
 
 def getProviderViews(cookies):
+    """
+    Get all views of all resources linked to your
+    providers
+
+    Args:
+        cookies: cookie used for the request
+
+    Returns:
+        Dataframe of statistics table
+    """
+
+    # Create resources list
     resources = listRecourceIDs(cookies)
+
+    # Initialize views list
     views = []
+
+    # For each resource
     for i in resources:
+
+        # Append resource views to list
         views.append(getResourceViews(cookies,14898))
     return resources, views
 
 def getCommunitiesID(cookies):
+    """
+    Get a dataframe with 
+
+    Args:
+        cookies: cookie used for the request
+
+    Returns:
+        Dataframe of statistics table
+    """
     url = 'https://iris.science-it.ch/communities/query'
     data_raw = requests.post(url,cookies=cookies)
     return data_from_raw(data_raw.content,data_field="Data")
