@@ -1,2 +1,2 @@
-from .utilities.utilities import *
+from . import utilities
 from .openirisapi import *
