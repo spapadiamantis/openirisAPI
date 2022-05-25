@@ -38,7 +38,7 @@ def get_cookie(filepath='cookie.txt'):
     """
 
     # Read raw data from file
-    with open('cookie.txt') as f:
+    with open(filepath) as f:
         data = f.read()
 
     # Return python dictionary
