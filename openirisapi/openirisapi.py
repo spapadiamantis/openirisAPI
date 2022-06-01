@@ -6,7 +6,7 @@ update operations for the time being.
 Author: Sotiris Papadiamantis
 """
 import requests
-import openirisapi.utilities.utilities as utilities
+from .utilities import data_from_raw, get_cookie
 
 def getBookings(cookies,start='2002-03-07',end='2024-03-07'):
     """
@@ -28,7 +28,7 @@ def getBookings(cookies,start='2002-03-07',end='2024-03-07'):
     data_raw = requests.post(url,params={'from':start,'to': end}, cookies=cookies)
 
     # Return formatted data
-    return  utilities.data_from_raw(data_raw.content,data_field="Data")
+    return data_from_raw(data_raw.content,data_field="Data")
 
 
 def getGroupIDs(cookies):
@@ -69,7 +69,7 @@ def getProviderIDs(cookies):
     data_raw = requests.post(url,cookies=cookies)
     
     # Return formatted data
-    return  utilities.data_from_raw(data_raw.content)
+    return data_from_raw(data_raw.content)
     
 
 def getUsers(cookies,start='2021-03-07',end='2023-03-08', to_csv=False):
@@ -106,7 +106,7 @@ def getUsers(cookies,start='2021-03-07',end='2023-03-08', to_csv=False):
         data_raw = requests.post(url,params={'from':start, 'to':end,'providerID':i},cookies=cookies)
 
         # Format data
-        data =  utilities.data_from_raw(data_raw.content,"Data")
+        data = data_from_raw(data_raw.content,"Data")
 
         # Append to list of dataframes
         df_list.append(data)
@@ -142,7 +142,7 @@ def getResourcesForProvider(cookies,providerId):
     raw_data = requests.post(url,params={'providerID':providerId},cookies=cookies)
 
     # Return formatted data
-    return  utilities.data_from_raw(raw_data.content)
+    return data_from_raw(raw_data.content)
 
 
 def getAllResources(cookies, to_csv=False):
