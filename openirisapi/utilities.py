@@ -7,7 +7,8 @@ import pandas as pd
 import json
 import ast
 
-def data_from_raw(data,data_field=" "):
+
+def data_from_raw(data, data_field=" "):
     """
     Simple data extraction function from request response
 
@@ -19,17 +20,18 @@ def data_from_raw(data,data_field=" "):
         Pandas dataframe of response data
     """
     dict_str = data.decode("UTF-8")
-    if data_field ==" ":
-       return(pd.DataFrame.from_dict(json.loads(dict_str)))
+    if data_field == " ":
+        return pd.DataFrame.from_dict(json.loads(dict_str))
     elif data_field == "Data":
-        return(pd.DataFrame.from_dict(json.loads(dict_str)["Data"]))
+        return pd.DataFrame.from_dict(json.loads(dict_str)["Data"])
     else:
-        return(pd.DataFrame.from_dict(json.loads(dict_str)[data_field]))
+        return pd.DataFrame.from_dict(json.loads(dict_str)[data_field])
 
-def get_cookie(filepath='cookie.txt'):
+
+def get_cookie(filepath="cookie.txt"):
     """
     Read cookie stored in filepath
-    
+
     Args:
         filepath: filepath of txt file storing login cookie
 
