@@ -48,10 +48,10 @@ def getGroupIDs(cookies):
     url = "https://iris.science-it.ch/groups/query"
 
     # Get response
-    data = requests.post(url, cookies=cookies)
+    data_raw = requests.post(url, cookies=cookies)
 
     # Return request content
-    return data.content
+    return data_from_raw(data_raw.content, data_field="Data")
 
 
 def getProviderIDs(cookies):
@@ -148,7 +148,7 @@ def getResourcesForProvider(cookies, providerId):
     raw_data = requests.post(url, params={"providerID": providerId}, cookies=cookies)
 
     # Return formatted data
-    return data_from_raw(raw_data.content)
+    return data_from_raw(raw_data.content, data_field="Data")
 
 
 def getAllResources(cookies, to_csv=False):
@@ -175,7 +175,7 @@ def getAllResources(cookies, to_csv=False):
         # Append result to list
         df_list.append(getResourcesForProvider(cookies, providerId=i))
 
-    # Concatenate reusults
+    # Concatenate results
     data = pd.concat(df_list)
 
     # If flag save in csv form
@@ -378,7 +378,7 @@ def getResourceTypes(cookies, providers=[]):
     return data_from_raw(raw_data.content, data_field="ParentTypes")
 
 
-def getCommunitiesID(cookies):
+def getCommunities(cookies):
     """
     Get a dataframe with all community ids
 
