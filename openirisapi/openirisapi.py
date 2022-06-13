@@ -388,8 +388,11 @@ def getCommunities(cookies):
     Returns:
         Dataframe of statistics table
     """
+
     url = "https://iris.science-it.ch/communities/query"
+
     data_raw = requests.post(url, cookies=cookies)
+
     return data_from_raw(data_raw.content, data_field="Data")
 
 
@@ -409,3 +412,110 @@ def getCommunityLinkedGroups(cookies, community_id):
     data_raw = requests.post(url, params={"id": community_id}, cookies=cookies)
 
     return data_from_raw(data_raw.content, data_field="Data")
+
+
+def getAdminUsers(
+    cookies,
+    providerId,
+    groupId="",
+    start="2021-03-07 10:30",
+    end="2022-03-07 10:30",
+    showByGroup=False,
+    includeTraining=False,
+    includeResourceAccess=False,
+    includeProviderAccess=False,
+):
+    """
+    Download a dataframe of all users that you administer according to filters
+
+    Args:
+        cookies: cookie used for the request
+        start: start date to filter results
+        end: end date to filter results
+        providerId: the provider concerned
+        groupId: group concerned
+        showByGroup: pagination selection
+        includeTraining: include users that have been trained on your resources
+        includeResourceAccess: include users that have access to at least one resource
+        includeProvdierAccess: include users that ha acess to your provider
+
+    Returns:
+        Dataframe of resources that are visible
+    """
+
+    # Set up request url
+    url = "https://openiris.io/admin-users?"
+
+    # Get data in raw form
+    raw_data = requests.post(
+        url,
+        params={
+            "providerId": providerId,
+            "groupId": groupId,
+            "from": start,
+            "to": end,
+            "showByGroup": showByGroup,
+            "includeTraining": includeTraining,
+            "includeResourceAccess": includeResourceAccess,
+            "includeProviderAccess": includeProviderAccess,
+        },
+        cookies=cookies,
+    )
+
+    return data_from_raw(raw_data.content, data_field="Data")
+
+
+def getDistributionList(
+    cookies,
+    providerId,
+    start="2021-03-07 10:30",
+    end="2023-03-07 10:30",
+    includeUsers=True,
+    includeGroupAdmins=False,
+    includeGroupHeads=False,
+    includeTrainings=False,
+    includeResourceAccess=False,
+    includeProviderAccess=False,
+):
+    """
+    Creates a distribution list of all Provider user based on filters
+    Note: Group filtering is not currently operational
+
+    Args:
+        cookies: cookie used for the request
+        start: start date to filter results
+        end: end date to filter results
+        providerId: the provider concerned
+        includeUsers: group concerned
+        includeGroupAdmins: pagination selection
+        includeGroupHeads: include users that have been trained on your resources
+        includeResourceAccess: include users that have access to at least one resource
+        includeProvdierAccess: include users that ha acess to your provider
+
+    Returns:
+        Dataframe of resources that are visible
+    """
+
+    # Set up request url
+    url = "https://openiris.io/admin-users/distribution"
+
+    groupId = ""
+    # Get data in raw form
+    raw_data = requests.post(
+        url,
+        params={
+            "providerId": providerId,
+            "groupId": groupId,
+            "from": start,
+            "to": end,
+            "includeUsers": includeUsers,
+            "includeGroupAdmins": includeGroupAdmins,
+            "includeGroupHeads": includeGroupHeads,
+            "includeTrainings": includeTrainings,
+            "includeResourceAccess": includeResourceAccess,
+            "includeProviderAccess": includeProviderAccess,
+        },
+        cookies=cookies,
+    )
+
+    return data_from_raw(raw_data.content, data_field="DistributionList")
