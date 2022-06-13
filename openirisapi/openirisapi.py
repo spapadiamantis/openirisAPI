@@ -397,6 +397,21 @@ def getCommunities(cookies):
 
 
 def getCommunityUsers(cookies, community_id):
+    """
+    Get a dataframe with all users of community with
+    community_id. Note that users that are affiliated via
+    group affiliation are not visible here. To get a full
+    account of the users you must use getCommunityLinkedGroups
+    and then use all then query users for each group
+
+
+    Args:
+        cookies: cookie used for the request
+        community_id: community id to search.
+
+    Returns:
+        Dataframe of users affiliated to the community
+    """
 
     url = "https://iris.science-it.ch/communities/querycommunityusers"
 
@@ -406,6 +421,17 @@ def getCommunityUsers(cookies, community_id):
 
 
 def getCommunityLinkedGroups(cookies, community_id):
+    """
+    Get a dataframe with all groups affiliated with the
+    community with community_id.
+
+    Args:
+        cookies: cookie used for the request
+        community_id: community id to search.
+
+    Returns:
+        Dataframe of groups affiliated to the community
+    """
 
     url = "https://iris.science-it.ch/communities/queryLinkedGroups"
 
