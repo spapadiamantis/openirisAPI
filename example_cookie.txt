@@ -1,0 +1,4 @@
+{'CookieScriptConsent': '{"action":"reject","categories":[]}',
+ "ASP.NET_SessionId": "",
+ ".ASPXAUTH":""}
+
