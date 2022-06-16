@@ -57,6 +57,8 @@ def getGroupIDs(cookies):
 def getProviderIDs(cookies):
     """
     Downloads a list of all provider ids linked to an account
+    Note that you have to activate the Billing option for this
+    function to work
 
     Args:
         cookies: cookie used for the request
@@ -154,7 +156,9 @@ def getResourcesForProvider(cookies, providerId):
 def getAllResources(cookies, to_csv=False):
     """
     Downloads a dataframe with information on all resources that are
-    administered the account in any provider
+    administered the account in any provider. This function calls
+    the getProviders function and therefore the billing option has
+    to be activated
 
     Args:
         cookies: cookie used for the request
