@@ -18,7 +18,7 @@ Here's a small example of some basic usage of the library
 import openirisapi.openirisapi as oi
 
 # Add cookie from text file
-cookie = oi.get_cookie('cookies.txt')
+cookie = oi.utilities.get_cookie('cookies.txt')
 
 # Download all bookings in a specific timeframe in dataframe form
 df = oi.getBookings(cookie,start='2002-03-07',end='2024-03-07')
@@ -29,5 +29,5 @@ users_df = oi.getUsers(cookies,start='2021-03-07',end='2023-03-08', to_csv=True)
 
 # Download all resiources associated to the Provider(s) that you administer
 # and skip save to csv
-resources_df = getAllResources(cookies, to_csv=False)
+resources_df = oi.getAllResources(cookies, to_csv=False)
 ```
